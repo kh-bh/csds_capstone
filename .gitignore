@@ -1,5 +1,4 @@
 *.env
 *.db
 *.html
-*.csv
 .DS_Store
