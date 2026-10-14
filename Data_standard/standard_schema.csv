@@ -1,0 +1,47 @@
+format,column,description
+facility,geography_level,facility or state
+facility,facility_type,hospital or asc: what kind of facility the row is about / summarizes
+facility,source_file,original CSV the row came from
+facility,facility_id,CMS facility ID (hospital CCN is 6 chars; ASC ID is 10 chars; different systems)
+facility,npi,National Provider Identifier (ASC rows only)
+facility,shared_facility_id,True if the same facility_id appears on more than one ASC row
+facility,facility_name,facility name
+facility,address,street address (hospitals only)
+facility,city,city/town
+facility,state,2-letter state/territory code
+facility,zip,ZIP code (text)
+facility,county,county/parish (hospitals only)
+facility,phone,telephone (hospitals only)
+facility,measure_group,CMS program the measure belongs to
+facility,condition,CMS condition group (timely care only)
+facility,measure_id,"CMS measure ID, one style across files (ASC-1 -> ASC_1)"
+facility,measure_short_name,readable snake_case measure name (added)
+facility,measure_name,measure name as published by CMS
+facility,better_direction,"""lower"", ""higher"" or ""n/a"": which direction is better (stated by CMS for complications/mortality/ED times, inferred for others)"
+facility,score,numeric measure value; blank if not reported
+facility,score_text,"non-numeric score text, e.g. ED volume ""very high"""
+facility,score_status,"""reported"" or ""Not Available"""
+facility,vs_national,Better / No Different / Worse / Too Few Cases / Not Available (only some measures have it)
+facility,cases,"denominator or sample size or total cases, whichever the source provides"
+facility,ci_lower,lower interval limit
+facility,ci_upper,upper interval limit
+facility,footnote_code,CMS footnote code(s)
+facility,period_start,start of data window (ISO date)
+facility,period_end,end of data window (ISO date)
+state,geography_level,facility or state
+state,facility_type,hospital or asc: what kind of facility the row is about / summarizes
+state,source_file,original CSV the row came from
+state,state,2-letter state/territory code
+state,measure_group,CMS program the measure belongs to
+state,condition,CMS condition group (timely care only)
+state,measure_id,"CMS measure ID, one style across files (ASC-1 -> ASC_1)"
+state,measure_short_name,readable snake_case measure name (added)
+state,measure_name,measure name as published by CMS
+state,better_direction,"""lower"", ""higher"" or ""n/a"": which direction is better (stated by CMS for complications/mortality/ED times, inferred for others)"
+state,ed_volume_tier,ED-volume tier of a state ED-time value (low/medium/high/very high); blank otherwise
+state,statistic,score | avg | median | n_better | n_same | n_worse | n_too_few
+state,value,numeric value of the statistic; blank if not reported
+state,value_status,"""reported"" or the text CMS shows instead of a number"
+state,footnote_code,CMS footnote code(s)
+state,period_start,start of data window (ISO date)
+state,period_end,end of data window (ISO date)

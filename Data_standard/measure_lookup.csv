@@ -1,0 +1,63 @@
+measure_group,measure_id,measure_short_name,measure_name,better_direction
+Complications and Deaths,COMP_HIP_KNEE,complications_hip_knee_replacement,Rate of complications for hip/knee replacement patients,lower
+Complications and Deaths,Hybrid_HWM,mortality_hospital_wide_all_cause,Hybrid Hospital-Wide All-Cause Risk Standardized Mortality Rate,lower
+Complications and Deaths,MORT_30_AMI,mortality_30day_heart_attack,Death rate for heart attack patients,lower
+Complications and Deaths,MORT_30_CABG,mortality_30day_cabg_surgery,Death rate for CABG surgery patients,lower
+Complications and Deaths,MORT_30_COPD,mortality_30day_copd,Death rate for COPD patients,lower
+Complications and Deaths,MORT_30_HF,mortality_30day_heart_failure,Death rate for heart failure patients,lower
+Complications and Deaths,MORT_30_PN,mortality_30day_pneumonia,Death rate for pneumonia patients,lower
+Complications and Deaths,MORT_30_STK,mortality_30day_stroke,Death rate for stroke patients,lower
+Complications and Deaths,PSI_03,psi03_pressure_ulcer_rate,Pressure ulcer rate,lower
+Complications and Deaths,PSI_04,psi04_death_after_serious_surgical_complication,Death rate among surgical inpatients with serious treatable complications,lower
+Complications and Deaths,PSI_06,psi06_iatrogenic_pneumothorax_rate,Iatrogenic pneumothorax rate,lower
+Complications and Deaths,PSI_08,psi08_inhospital_fall_fracture_rate,In-hospital fall-associated fracture rate,lower
+Complications and Deaths,PSI_09,psi09_postop_hemorrhage_hematoma_rate,Postoperative hemorrhage or hematoma rate,lower
+Complications and Deaths,PSI_10,psi10_postop_kidney_injury_dialysis_rate,Postoperative acute kidney injury requiring dialysis rate,lower
+Complications and Deaths,PSI_11,psi11_postop_respiratory_failure_rate,Postoperative respiratory failure rate,lower
+Complications and Deaths,PSI_12,psi12_postop_pulmonary_embolism_dvt_rate,Perioperative pulmonary embolism or deep vein thrombosis rate,lower
+Complications and Deaths,PSI_13,psi13_postop_sepsis_rate,Postoperative sepsis rate,lower
+Complications and Deaths,PSI_14,psi14_postop_wound_dehiscence_rate,Postoperative wound dehiscence rate,lower
+Complications and Deaths,PSI_15,psi15_accidental_puncture_laceration_rate,Abdominopelvic accidental puncture or laceration rate,lower
+Complications and Deaths,PSI_90,psi90_patient_safety_composite,CMS Medicare PSI 90: Patient safety and adverse events composite,lower
+Timely and Effective Care,EDV,ed_volume_category,Emergency department volume,n/a
+Timely and Effective Care,GMCS,malnutrition_composite_score,Global Malnutrition Composite Score,higher
+Timely and Effective Care,GMCS_Malnutrition_Diagnosis_Documented,malnutrition_diagnosis_documented,Global Malnutrition Composite Score: Malnutrition Diagnosis Documented,higher
+Timely and Effective Care,GMCS_Malnutrition_Screening,malnutrition_risk_screening,Global Malnutrition Composite Score: Malnutrition Risk Screening,higher
+Timely and Effective Care,GMCS_Nutrition_Assessment,malnutrition_nutrition_assessment,Global Malnutrition Composite Score: Nutrition Assessment,higher
+Timely and Effective Care,GMCS_Nutritional_Care_Plan,malnutrition_nutritional_care_plan,Global Malnutrition Composite Score: Nutritional Care Plan,higher
+Timely and Effective Care,HH_HYPER,harm_severe_hyperglycemia,Hospital Harm - Severe Hyperglycemia,lower
+Timely and Effective Care,HH_HYPO,harm_severe_hypoglycemia,Hospital Harm - Severe Hypoglycemia,lower
+Timely and Effective Care,HH_ORAE,harm_opioid_adverse_events,Hospital Harm - Opioid Related Adverse Events,lower
+Timely and Effective Care,IMM_3,staff_flu_vaccination_pct,Healthcare workers given influenza vaccination,higher
+Timely and Effective Care,OP_18a,ed_median_minutes_all_patients,"Average (median) time all patients spent in the emergency department before leaving from the visit, including psychiatric/mental health patients and patients who were transferred to another facility. A lower number of minutes is better",lower
+Timely and Effective Care,OP_18b,ed_median_minutes_excl_transfers_psych,"Average (median) time patients spent in the emergency department before leaving from the visit, excluding patients transferred to another facility or psychiatric care/mental health patients. A lower number of minutes is better",lower
+Timely and Effective Care,OP_18c,ed_median_minutes_psych_patients,Average (median) time psychiatric/mental health patients spent in the emergency department before leaving from the visit. A lower number of minutes is better,lower
+Timely and Effective Care,OP_18d,ed_median_minutes_transferred_patients,Average (median) time patients spent in the emergency department before being transferred to another facility. A lower number of minutes is better,lower
+Timely and Effective Care,OP_22,ed_left_before_seen_pct,Left before being seen,lower
+Timely and Effective Care,OP_23,ed_head_ct_results_timely_pct,Head CT results,higher
+Timely and Effective Care,OP_29,colonoscopy_followup_interval_appropriate_pct,Endoscopy/polyp surveillance: appropriate follow-up interval for normal colonoscopy in average risk patients,higher
+Timely and Effective Care,OP_31,cataract_visual_function_improved_pct,Improvement in Patient's Visual Function within 90 Days Following Cataract Surgery,higher
+Timely and Effective Care,OP_40,stemi_measure_op40,ST-Segment Elevation Myocardial Infarction (STEMI),higher
+Timely and Effective Care,SAFE_USE_OF_OPIOIDS,opioid_concurrent_prescribing,Safe Use of Opioids - Concurrent Prescribing,lower
+Timely and Effective Care,SEP_1,sepsis_care_bundle_pct,Appropriate care for severe sepsis and septic shock,higher
+Timely and Effective Care,SEP_SH_3HR,septic_shock_3hr_bundle,Septic Shock 3-Hour Bundle,higher
+Timely and Effective Care,SEP_SH_6HR,septic_shock_6hr_bundle,Septic Shock 6-Hour Bundle,higher
+Timely and Effective Care,SEV_SEP_3HR,severe_sepsis_3hr_bundle,Severe Sepsis 3-Hour Bundle,higher
+Timely and Effective Care,SEV_SEP_6HR,severe_sepsis_6hr_bundle,Severe Sepsis 6-Hour Bundle,higher
+Timely and Effective Care,STK_02,stroke_antithrombotic_at_discharge,Discharged on Antithrombotic Therapy,higher
+Timely and Effective Care,STK_03,stroke_anticoagulation_afib,Anticoagulation Therapy for Atrial Fibrillation/Flutter,higher
+Timely and Effective Care,STK_05,stroke_antithrombotic_by_day2,Antithrombotic Therapy by End of Hospital Day 2,higher
+Timely and Effective Care,VTE_1,vte_prophylaxis,Venous Thromboembolism Prophylaxis,higher
+Timely and Effective Care,VTE_2,icu_vte_prophylaxis,Intensive Care Unit Venous Thromboembolism Prophylaxis,higher
+ASC Quality Reporting,ASC_1,patient_burn,Number of patients who experience a burn prior to discharge from the ASC,lower
+ASC Quality Reporting,ASC_2,patient_fall,Number of patients who experience a fall within the ASC,lower
+ASC Quality Reporting,ASC_3,wrong_site_side_patient_procedure_implant,"Number of patients who experience a wrong site, side, patient, procedure, or implant",lower
+ASC Quality Reporting,ASC_4,hospital_transfer_admission,Percentage of ASC patients who are transferred or admitted to a hospital upon discharge from the ASC,lower
+ASC Quality Reporting,ASC_9,colonoscopy_followup_interval_appropriate,Endoscopy/Polyp Surveillance: Appropriate Follow-up Interval for Normal Colonoscopy in Average Risk Patients,higher
+ASC Quality Reporting,ASC_11,cataract_visual_function_improved,Improvement in Patient's Visual Function within 90 Days Following Cataract Surgery,higher
+ASC Quality Reporting,ASC_12,hospital_visit_after_colonoscopy_7day,Facility 7-Day Risk Standardized Hospital Visit Rate after Outpatient Colonoscopy,lower
+ASC Quality Reporting,ASC_13,normothermia_outcome,Normothermia (body temperature of 96.8 F or higher within 15 minutes of arriving in the post-anesthesia care unit),higher
+ASC Quality Reporting,ASC_14,unplanned_anterior_vitrectomy,Unplanned Anterior Vitrectomy (percentage of cataract surgeries with unplanned additional eye surgery),lower
+ASC Quality Reporting,ASC_17,hospital_visit_after_orthopedic_procedure,Hospital Visits after Orthopedic Ambulatory Surgical Center Procedures,lower
+ASC Quality Reporting,ASC_18,hospital_visit_after_urology_procedure,Hospital Visits after Urology Ambulatory Surgical Center Procedures,lower
+ASC Quality Reporting,ASC_19,hospital_visit_after_general_surgery,Hospital Visits after General Surgery Procedures Performed,lower
