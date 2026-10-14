@@ -5,7 +5,7 @@ import {
   Route,
   Link,
 } from "react-router-dom";
-import { Activity, MapPin, Search } from "lucide-react";
+import { Activity, HospitalIcon, MapPin, Search } from "lucide-react";
 
 import MapPage from "./pages/MapPage";
 import "./App.css";
@@ -68,16 +68,16 @@ function App() {
       <div className="app">
         <header className="navbar">
           <Link className="brand" to="/">
-            <Activity size={26} />
+            <HospitalIcon size={30} />
             <span>ClearCare</span>
           </Link>
 
-          <nav>
-            <Link to="/">Hospital Rankings</Link>
+          <p className="brand">Get The Care That Cares About You</p>
 
+          <nav>
             <Link to="/map">
               <MapPin size={17} />
-              Nearby Hospitals
+              See Nearby Hospitals
             </Link>
           </nav>
         </header>
