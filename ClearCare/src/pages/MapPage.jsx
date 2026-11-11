@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import Plot from "react-plotly.js";
 import { createClient } from "@supabase/supabase-js";
+import { useSearchParams } from "react-router-dom";
+import { loadZipData } from "../utils/zipCodes";
 
 const supabaseUrl = "https://dtlwchocgmwnoiflwibd.supabase.co";
 const supabaseKey =
@@ -35,33 +37,6 @@ const HCAHPS_METRICS = METRICS.filter((m) => m.source === "hcahps");
 
 function formatValue(metric, v) {
   return metric.unit === "stars" ? v.toFixed(2) : `${v.toFixed(1)}%`;
-}
-
-// ZIP -> {lat, lon}, loaded from a file you host yourself.
-// Download https://download.geonames.org/export/zip/US.zip, unzip it, and put
-// the resulting US.txt in your app's /public folder so it is served at /US.txt.
-// (Tab-separated; col 1 = ZIP, col 9 = latitude, col 10 = longitude.)
-const ZIP_FILE_URL = "/US.txt";
-
-async function loadZipCoords() {
-  const res = await fetch(ZIP_FILE_URL);
-  if (!res.ok) throw new Error(`Could not load ${ZIP_FILE_URL} (HTTP ${res.status})`);
-  const text = await res.text();
-  if (text.trim().startsWith("<")) {
-    // Dev servers return index.html for missing files
-    throw new Error(`${ZIP_FILE_URL} not found - put US.txt in your /public folder`);
-  }
-  const lookup = {};
-  text.split(/\r?\n/).forEach((line) => {
-    const cols = line.split("\t");
-    if (cols.length < 11) return;
-    const lat = parseFloat(cols[9]);
-    const lon = parseFloat(cols[10]);
-    if (cols[1] && !isNaN(lat) && !isNaN(lon)) {
-      lookup[cols[1].trim().padStart(5, "0")] = { lat, lon };
-    }
-  });
-  return lookup;
 }
 
 // Map full state names to two-letter postal codes
@@ -138,19 +113,27 @@ const COLORSCALE = [
 ];
 
 function MapPage() {
+  const [searchParams] = useSearchParams();
+  const requestedZip = searchParams.get("zip")?.trim() || "";
   const [hospitals, setHospitals] = useState([]);
   const [metricKey, setMetricKey] = useState("google");
   const [selectedState, setSelectedState] = useState(null);
-  const [zipCoords, setZipCoords] = useState({});
+  const [zipCoords, setZipCoords] = useState(null);
   const [zipError, setZipError] = useState("");
   const [loading, setLoading] = useState(true);
   const [statusMsg, setStatusMsg] = useState("");
 
   const metric = METRICS.find((m) => m.key === metricKey);
+  const requestedZipData = zipCoords?.[requestedZip];
+  const invalidRequestedZip = Boolean(
+    zipCoords &&
+      requestedZip &&
+      (!/^\d{5}$/.test(requestedZip) || !requestedZipData?.state)
+  );
 
-  // Load ZIP -> lat/lon lookup once
+  // Load ZIP -> state and coordinate lookup once
   useEffect(() => {
-    loadZipCoords()
+    loadZipData()
       .then(setZipCoords)
       .catch((e) => {
         console.error("ZIP lookup failed:", e);
@@ -273,11 +256,13 @@ function MapPage() {
 
   // Default the selected state to the first one with data
   const activeState =
-    selectedState || (stateMapData[0] ? stateMapData[0].locations[0] : null);
+    selectedState ||
+    requestedZipData?.state ||
+    (stateMapData[0] ? stateMapData[0].locations[0] : null);
 
   // Hospital points for the selected state, placed at their ZIP locations
   const points = useMemo(() => {
-    if (!activeState || Object.keys(zipCoords).length === 0) {
+    if (!activeState || !zipCoords) {
       return { trace: null, missing: 0, count: 0 };
     }
 
@@ -340,7 +325,10 @@ function MapPage() {
 
   // Center/zoom the basemap on the plotted points
   let mapView = { center: { lat: 39.5, lon: -98.35 }, zoom: 3 }; // whole US fallback
-  if (points.trace && points.count > 0) {
+  const focusZip = requestedZipData;
+  if (focusZip && focusZip.state === activeState) {
+    mapView = { center: { lat: focusZip.lat, lon: focusZip.lon }, zoom: 10 };
+  } else if (points.trace && points.count > 0) {
     const { lat, lon } = points.trace;
     const minLat = Math.min(...lat), maxLat = Math.max(...lat);
     const minLon = Math.min(...lon), maxLon = Math.max(...lon);
@@ -469,19 +457,19 @@ function MapPage() {
                   center: mapView.center,
                   zoom: mapView.zoom,
                 },
-                uirevision: `${activeState}-${metricKey}`, // keep pan/zoom until state or measure changes
+                uirevision: `${activeState}-${metricKey}-${requestedZip}`,
                 autosize: true,
                 margin: { l: 0, r: 0, t: 0, b: 0 },
               }}
               useResizeHandler={true}
               style={{ width: "100%", height: "450px" }}
             />
-            {zipError && (
+            {(zipError || invalidRequestedZip) && (
               <p style={{ fontSize: "0.85rem", color: "red" }}>
-                ZIP lookup failed: {zipError}
+                {zipError || "The ZIP code in the URL is not valid."}
               </p>
             )}
-            {!zipError && Object.keys(zipCoords).length === 0 && (
+            {!zipError && !zipCoords && (
               <p style={{ fontSize: "0.85rem", color: "#777" }}>
                 Loading ZIP coordinates...
               </p>

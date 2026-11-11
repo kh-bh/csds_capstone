@@ -7,13 +7,22 @@
 
 /* Shared navigation */
 .navbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
-  gap: 0px;
+  gap: 16px;
   padding: 0px 5%;
   background: white;
   border-bottom: 1px solid #e2e8f0;
+}
+
+.navbar-tagline {
+  justify-self: center;
+  text-align: center;
+}
+
+.navbar nav {
+  justify-self: end;
 }
 
 .brand {
@@ -120,6 +129,10 @@ input {
   font-size: 13px;
 }
 
+.search-error {
+  color: #dc2626;
+}
+
 .intro {
   padding: 50px 20px 70px;
   text-align: center;
@@ -171,8 +184,13 @@ input {
 /* Smaller screens */
 @media (max-width: 600px) {
   .navbar {
-    align-items: flex-start;
-    flex-direction: column;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    padding: 12px 5%;
+  }
+
+  .navbar nav {
+    justify-self: center;
   }
 
   .navbar nav {
