@@ -26,3 +26,6 @@ To run the RAG engine, use
 ```
 python3 -m uvicorn rag_server:app --port 8000
 ```
+
+Debugging notes
+- Make sure index.html and .env files are defined.
