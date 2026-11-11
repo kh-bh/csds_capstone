@@ -5,9 +5,10 @@ import {
   Route,
   Link,
 } from "react-router-dom";
-import { Activity, HospitalIcon, MapPin, Search } from "lucide-react";
+import { Activity, HospitalIcon, MapPin, MessageSquareText, Search } from "lucide-react";
 
 import MapPage from "./pages/MapPage";
+import RagChatPage from "./pages/RagChatPage";
 import "./App.css";
 
 function HomePage() {
@@ -79,12 +80,18 @@ function App() {
               <MapPin size={17} />
               See Nearby Hospitals
             </Link>
+
+            <Link to="/reviews">
+              <MessageSquareText size={17} />
+              Ask About Reviews
+            </Link>
           </nav>
         </header>
 
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/map" element={<MapPage />} />
+          <Route path="/reviews" element={<RagChatPage />} />
         </Routes>
       </div>
     </BrowserRouter>
