@@ -15,13 +15,20 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const GENERAL_TABLE = "cms_hospitals"; // facility_id, facility_name, state, zip_code
 const HCAHPS_TABLE = "hcahps_scores"; // facility_id + the HCAHPS columns below
 const GOOGLE_TABLE = "google_hospital_reviews"; // needs a facility_id column to join
+const SCORING_TABLE = "scoring_system_hospital_scores"; // facility ID + the scoring columns below
+const SCORING_ID_COLUMN = "facility_id"; // name of the facility ID column in SCORING_TABLE
 
 // ---------------------------------------------------------------------------
-// Metrics shown in the dropdown. `column` is the column in hcahps_scores.
-// Stars use a fixed 1-5 color range; percent metrics use the data's range.
+// Measures shown in the dropdown. `column` is the column name in the source table.
+//   unit:    "stars" | "percent" | "score" | "rank" (controls number formatting)
+//   min/max: fixed color range; if omitted, the range comes from the data
+//   reverse: true when LOWER is better (e.g. rank 1 = best), so green = low
 // ---------------------------------------------------------------------------
 const METRICS = [
+  // Patient reviews
   { key: "google", label: "Google hospital rating (1-5 stars)", legend: "Google rating", source: "google", unit: "stars", min: 1, max: 5 },
+
+  // HCAHPS survey scores
   { key: "h_star_rating", label: "HCAHPS summary star rating (1-5 stars)", legend: "Summary stars", source: "hcahps", column: "h_star_rating", unit: "stars", min: 1, max: 5 },
   { key: "h_hsp_rating_9_10", label: "Patients giving hospital a 9-10 rating (%)", legend: "% rated 9-10", source: "hcahps", column: "h_hsp_rating_9_10", unit: "percent" },
   { key: "h_recmnd_dy", label: "Patients who would definitely recommend (%)", legend: "% definitely recommend", source: "hcahps", column: "h_recmnd_dy", unit: "percent" },
@@ -31,12 +38,45 @@ const METRICS = [
   { key: "h_clean_hsp_a_p", label: "Room and bathroom always clean (%)", legend: "% always clean", source: "hcahps", column: "h_clean_hsp_a_p", unit: "percent" },
   { key: "h_quiet_hsp_a_p", label: "Area around room always quiet at night (%)", legend: "% always quiet", source: "hcahps", column: "h_quiet_hsp_a_p", unit: "percent" },
   { key: "h_comp_6_y_p", label: "Given discharge information (%)", legend: "% got discharge info", source: "hcahps", column: "h_comp_6_y_p", unit: "percent" },
+
+  // Overall scoring system
+  { key: "star_as_0_100", label: "Star score on a 0-100 scale", legend: "Score (0-100)", source: "scoring", column: "star_as_0_100", unit: "score" },
+  { key: "cms_overall_star", label: "CMS overall star rating (1-5 stars)", legend: "CMS stars", source: "scoring", column: "cms_overall_star", unit: "stars", min: 1, max: 5 },
+
+  // Specialty care scores
+  { key: "spec_heart_attack", label: "Heart attack care", legend: "Heart attack care", source: "specialty", column: "spec_Heart attack care", unit: "score" },
+  { key: "spec_heart_failure", label: "Heart failure care", legend: "Heart failure care", source: "specialty", column: "spec_Heart failure care", unit: "score" },
+  { key: "spec_pneumonia", label: "Pneumonia care", legend: "Pneumonia care", source: "specialty", column: "spec_Pneumonia care", unit: "score" },
+  { key: "spec_stroke", label: "Stroke care", legend: "Stroke care", source: "specialty", column: "spec_Stroke care", unit: "score" },
+  { key: "spec_heart_bypass", label: "Heart bypass surgery", legend: "Heart bypass surgery", source: "specialty", column: "spec_Heart bypass surgery", unit: "score" },
+  { key: "spec_joint_replacement", label: "Joint replacement", legend: "Joint replacement", source: "specialty", column: "spec_Joint replacement", unit: "score" },
+  { key: "spec_sepsis", label: "Sepsis care", legend: "Sepsis care", source: "specialty", column: "spec_Sepsis care", unit: "score" },
 ];
 
 const HCAHPS_METRICS = METRICS.filter((m) => m.source === "hcahps");
+const SCORING_METRICS = METRICS.filter(
+  (m) => m.source === "scoring" || m.source === "specialty"
+);
+
+// Dropdown sections, in display order
+const METRIC_GROUPS = [
+  { label: "Patient reviews", source: "google" },
+  { label: "HCAHPS survey scores", source: "hcahps" },
+  { label: "Overall scoring system", source: "scoring" },
+  { label: "Specialty care scores", source: "specialty" },
+];
 
 function formatValue(metric, v) {
-  return metric.unit === "stars" ? v.toFixed(2) : `${v.toFixed(1)}%`;
+  switch (metric.unit) {
+    case "stars":
+      return v.toFixed(2);
+    case "percent":
+      return `${v.toFixed(1)}%`;
+    case "rank":
+      return `#${Math.round(v).toLocaleString()}`;
+    default:
+      return v.toFixed(1);
+  }
 }
 
 // Map full state names to two-letter postal codes
@@ -79,7 +119,7 @@ function normalizeZip(raw) {
   return String(raw).trim().slice(0, 5).padStart(5, "0");
 }
 
-// HCAHPS values are stored as text and can be "Not Available", "N/A", etc.
+// Score values may be stored as text and can be "Not Available", "N/A", etc.
 function parseScore(raw) {
   if (raw === null || raw === undefined) return null;
   const cleaned = String(raw).replace("%", "").trim();
@@ -87,6 +127,9 @@ function parseScore(raw) {
   const n = Number(cleaned);
   return isNaN(n) ? null : n;
 }
+
+// Quote column names so mixed-case names and names with spaces work in .select()
+const quoteColumns = (cols) => cols.map((c) => `"${c}"`).join(", ");
 
 // Fetch every row of a table in batches of 1000
 async function fetchAll(table, columns, orderBy) {
@@ -141,17 +184,22 @@ function MapPage() {
       });
   }, []);
 
-  // Load all three tables and join them on facility_id
+  // Load all four tables and join them on facility ID
   useEffect(() => {
     async function loadData() {
       setLoading(true);
       try {
         const hcahpsColumns = ["facility_id", ...HCAHPS_METRICS.map((m) => m.column)].join(", ");
+        const scoringColumns = quoteColumns([
+          SCORING_ID_COLUMN,
+          ...SCORING_METRICS.map((m) => m.column),
+        ]);
 
-        const [generalRows, hcahpsRows, reviewRows] = await Promise.all([
+        const [generalRows, hcahpsRows, reviewRows, scoringRows] = await Promise.all([
           fetchAll(GENERAL_TABLE, "facility_id, facility_name, state, zip_code", "facility_id"),
           fetchAll(HCAHPS_TABLE, hcahpsColumns, "facility_id"),
           fetchAll(GOOGLE_TABLE, "facility_id, hospital_rating", "facility_id"),
+          fetchAll(SCORING_TABLE, scoringColumns, SCORING_ID_COLUMN),
         ]);
 
         if (generalRows.length === 0) {
@@ -195,6 +243,16 @@ function MapPage() {
           if (rating !== null) h.values.google = rating;
         });
 
+        // 4. Scoring system: national rank, 0-100 score, CMS stars, specialty scores
+        scoringRows.forEach((r) => {
+          const h = byId[normalizeFacilityId(r[SCORING_ID_COLUMN])];
+          if (!h) return;
+          SCORING_METRICS.forEach((m) => {
+            const v = parseScore(r[m.column]);
+            if (v !== null) h.values[m.key] = v;
+          });
+        });
+
         setHospitals(Object.values(byId));
       } catch (err) {
         console.error("Fetch Exception:", err);
@@ -213,7 +271,7 @@ function MapPage() {
     [hospitals, metricKey]
   );
 
-  // Color range for points: fixed for stars, data-driven for percentages
+  // Color range for points: fixed for stars, data-driven otherwise
   const colorRange = useMemo(() => {
     if (metric.min !== undefined) return [metric.min, metric.max];
     const vals = hospitalsWithValue.map((h) => h.values[metricKey]);
@@ -246,6 +304,7 @@ function MapPage() {
         locations,
         z: zValues,
         colorscale: COLORSCALE,
+        reversescale: metric.reverse === true, // lower = better (e.g. rank)
         zmin: minZ === maxZ ? minZ - 1 : minZ,
         zmax: maxZ,
         colorbar: { title: `Avg: ${metric.legend}` },
@@ -314,6 +373,7 @@ function MapPage() {
           opacity: 0.9,
           color: values,
           colorscale: COLORSCALE,
+          reversescale: metric.reverse === true, // lower = better (e.g. rank)
           cmin: colorRange[0],
           cmax: colorRange[1],
           showscale: true,
@@ -361,20 +421,15 @@ function MapPage() {
             onChange={(e) => setMetricKey(e.target.value)}
             style={{ padding: "0.4rem 0.6rem", fontSize: "1rem", borderRadius: "6px" }}
           >
-            <optgroup label="Patient reviews">
-              {METRICS.filter((m) => m.source === "google").map((m) => (
-                <option key={m.key} value={m.key}>
-                  {m.label}
-                </option>
-              ))}
-            </optgroup>
-            <optgroup label="HCAHPS survey scores">
-              {HCAHPS_METRICS.map((m) => (
-                <option key={m.key} value={m.key}>
-                  {m.label}
-                </option>
-              ))}
-            </optgroup>
+            {METRIC_GROUPS.map((group) => (
+              <optgroup key={group.source} label={group.label}>
+                {METRICS.filter((m) => m.source === group.source).map((m) => (
+                  <option key={m.key} value={m.key}>
+                    {m.label}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
           </select>
         </label>
       </section>
