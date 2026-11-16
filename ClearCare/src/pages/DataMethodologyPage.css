@@ -1,0 +1,153 @@
+.methodology-page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+}
+
+.methodology-header {
+  max-width: 800px;
+  margin-bottom: 48px;
+}
+
+.methodology-back-link {
+  display: inline-block;
+  margin-bottom: 32px;
+  color: #176b5b;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.methodology-back-link:hover,
+.methodology-back-link:focus-visible {
+  text-decoration: underline;
+}
+
+.methodology-header h1 {
+  margin: 10px 0 16px;
+  font-size: clamp(32px, 5vw, 46px);
+}
+
+.methodology-header > p:last-child,
+.methodology-section > p,
+.methodology-callout p {
+  color: #475569;
+  line-height: 1.75;
+}
+
+.methodology-section {
+  margin-top: 40px;
+}
+
+.methodology-section h2,
+.methodology-callout h2 {
+  margin: 0 0 14px;
+  font-size: 26px;
+}
+
+.methodology-section h3 {
+  margin: 24px 0 8px;
+  font-size: 18px;
+}
+
+.methodology-figure {
+  margin: 20px 0 28px;
+}
+
+.methodology-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.methodology-figure figcaption {
+  margin-top: 8px;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.methodology-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.methodology-card {
+  padding: 20px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.methodology-card h3 {
+  margin: 0 0 8px;
+  color: #176b5b;
+  font-size: 17px;
+}
+
+.methodology-card p {
+  margin: 0;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.methodology-list {
+  display: grid;
+  gap: 10px;
+  padding-left: 24px;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.methodology-table-wrap {
+  overflow-x: auto;
+  margin: 16px 0;
+}
+
+.methodology-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.methodology-table th,
+.methodology-table td {
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+.methodology-table thead {
+  background: #eaf3f1;
+}
+
+.methodology-total {
+  background: #f1f5f9;
+}
+
+.methodology-callout {
+  margin-top: 48px;
+  padding: 24px;
+  background: #eaf3f1;
+  border-left: 4px solid #176b5b;
+  border-radius: 8px;
+}
+
+.methodology-callout p:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+  .methodology-page {
+    padding: 28px 18px 56px;
+  }
+
+  .methodology-card-grid {
+    grid-template-columns: 1fr;
+  }
+}

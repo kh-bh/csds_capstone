@@ -11,6 +11,7 @@ import { HospitalIcon, MapPin, MessageSquareText, Search } from "lucide-react";
 
 import MapPage from "./pages/MapPage";
 import RagChatPage from "./pages/RagChatPage";
+import DataMethodologyPage from "./pages/DataMethodologyPage";
 import { loadZipData } from "./utils/zipCodes";
 import "./App.css";
 
@@ -93,6 +94,20 @@ function HomePage() {
         )}
       </section>
 
+      <section className="methodology-promo" aria-labelledby="methodology-promo-title">
+        <div>
+          <p className="eyebrow">HOW TO READ THE DATA</p>
+          <h2 id="methodology-promo-title">Data &amp; Scoring Methodology</h2>
+          <p>
+            Learn where ClearCare's hospital data comes from, how scores are
+            calculated, and what to keep in mind when comparing results.
+          </p>
+        </div>
+        <Link className="methodology-link" to="/methodology">
+          Explore our methodology
+        </Link>
+      </section>
+
       <section className="intro">
         <p className="eyebrow">YOUR HEALTHCARE, COMPARED</p>
 
@@ -102,6 +117,38 @@ function HomePage() {
           Explore hospital quality, patient experiences,
           and pricing information in one place.
         </p>
+      </section>
+
+      <section className="about-section" aria-labelledby="about-title">
+        <div className="about-heading">
+          <p className="eyebrow">ABOUT US</p>
+          <h2 id="about-title">About ClearCare</h2>
+          <h3>Making healthcare decisions more transparent</h3>
+          <p>
+            ClearCare brings hospital quality measures and patient experience
+            information together, helping people explore and compare hospitals
+            based on what matters to them.
+          </p>
+        </div>
+
+        <div className="about-details">
+          <article>
+            <h3>What We Do</h3>
+            <p>
+              We provide interactive hospital maps and comparison metrics,
+              alongside tools to explore patient reviews and ask questions
+              about hospital experiences.
+            </p>
+          </article>
+          <article>
+            <h3>Our Mission</h3>
+            <p>
+              Our mission is to make hospital information easier to find and
+              understand, so individuals and families can make more informed
+              healthcare decisions with greater confidence.
+            </p>
+          </article>
+        </div>
       </section>
     </main>
   );
@@ -136,6 +183,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/map" element={<MapPage />} />
           <Route path="/reviews" element={<RagChatPage />} />
+          <Route path="/methodology" element={<DataMethodologyPage />} />
         </Routes>
       </div>
     </BrowserRouter>
