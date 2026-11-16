@@ -269,6 +269,7 @@ function MapPage() {
     const lats = [];
     const lons = [];
     const values = [];
+    const hospitalNames = [];
     const hoverTexts = [];
     const seenAtZip = {}; // spread out hospitals that share a ZIP
     let missing = 0;
@@ -293,6 +294,7 @@ function MapPage() {
         lats.push(coords.lat + r * Math.sin(angle));
         lons.push(coords.lon + r * Math.cos(angle));
         values.push(v);
+        hospitalNames.push(h.name);
 
         hoverTexts.push(
           `<b>${h.name}</b><br>ZIP: ${h.zip}<br>${metric.legend}: ${formatValue(metric, v)}`
@@ -307,6 +309,7 @@ function MapPage() {
         mode: "markers",
         lat: lats,
         lon: lons,
+        customdata: hospitalNames,
         text: hoverTexts,
         hovertemplate: "%{text}<extra></extra>",
         marker: {
@@ -351,7 +354,8 @@ function MapPage() {
         <h1>Explore Hospitals Across the U.S.</h1>
         <p>
           Pick a measure, then click any state on the left map to see individual
-          hospitals on the right.
+          hospitals on the right. Click a hospital point to search its name in a
+          new tab.
         </p>
 
         <label style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
@@ -463,6 +467,16 @@ function MapPage() {
               }}
               useResizeHandler={true}
               style={{ width: "100%", height: "450px" }}
+              onClick={(event) => {
+                const hospitalName = event.points?.[0]?.customdata;
+                if (typeof hospitalName !== "string" || !hospitalName) return;
+
+                window.open(
+                  `https://www.google.com/search?q=${encodeURIComponent(hospitalName)}`,
+                  "_blank",
+                  "noopener,noreferrer"
+                );
+              }}
             />
             {(zipError || invalidRequestedZip) && (
               <p style={{ fontSize: "0.85rem", color: "red" }}>
